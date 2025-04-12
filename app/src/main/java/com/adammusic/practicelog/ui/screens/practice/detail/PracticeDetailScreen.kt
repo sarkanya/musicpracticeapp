@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.luminance
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,7 +85,6 @@ fun PracticeDetailScreen(
     ) { padding ->
         when (uiState) {
             is PracticeDetailUiState.Loading -> {
-                // Betöltés jelzése
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -93,7 +93,6 @@ fun PracticeDetailScreen(
                 }
             }
             is PracticeDetailUiState.NotFound -> {
-                // Üzenet, ha a gyakorlat nem található
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -102,7 +101,6 @@ fun PracticeDetailScreen(
                 }
             }
             is PracticeDetailUiState.Success -> {
-                // Gyakorlat részleteinek megjelenítése
                 val practice = (uiState as PracticeDetailUiState.Success).practice
                 LazyColumn(
                     modifier = Modifier
@@ -198,15 +196,23 @@ fun PracticeDetailScreen(
 
 @Composable
 private fun HeaderSection(practice: Practice) {
+    val categoryColor = Color(practice.category.color)
+    val luminance = categoryColor.luminance()
+    val textColor = if (luminance > 0.5f) {
+        Color.Black
+    } else {
+        Color.White
+    }
     Column {
         Surface(
-            color = Color(practice.category.color).copy(alpha = 0.2f),
+            color = categoryColor,
             shape = MaterialTheme.shapes.small
         ) {
             Text(
                 text = practice.category.name,
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
+                color = textColor
             )
         }
 

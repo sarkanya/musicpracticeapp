@@ -23,10 +23,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.adammusic.practicelog.data.model.Category
 import com.adammusic.practicelog.data.model.Practice
@@ -271,6 +269,13 @@ fun PracticeCard(
     practice: Practice,
     onClick: () -> Unit
 ) {
+    val categoryColor = Color(practice.category.color)
+    val luminance = categoryColor.luminance()
+    val textColor = if (luminance > 0.5f) {
+        Color.Black
+    } else {
+        Color.White
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -283,13 +288,14 @@ fun PracticeCard(
         ) {
             Surface(
                 modifier = Modifier.wrapContentSize(),
-                color = Color(practice.category.color).copy(alpha = 0.6f),
+                color = categoryColor,
                 shape = MaterialTheme.shapes.small
             ) {
                 Text(
                     text = practice.category.name,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    style = MaterialTheme.typography.labelSmall
+                    style = MaterialTheme.typography.labelSmall,
+                    color = textColor
                 )
             }
 
